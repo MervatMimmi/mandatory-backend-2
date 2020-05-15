@@ -10,11 +10,11 @@ let boardSchema = new Schema({
     created_at: {
         Date
     },
-    column: {
+    /*column: {
         type: Schema.Types.ObjectId,
         ref: 'Column',
         required: true
-    }
+    }*/
 });
 
 module.exports = mongoose.model('Board', boardSchema);

@@ -26,11 +26,19 @@ apiRouter.use(express.urlencoded());
 
 const Board = require('./controllers/boards');
 
+
 //=============Board Routes================//
 // show board
-
+apiRouter.get('/boards/', Board.showBoards);
 //create board
-apiRouter.post('/boards/:board', Board.createBoard);
+apiRouter.post('/boards/', Board.createBoard);
+
+//delete board
+apiRouter.delete('/boards/:id/', Board.deleteBoard);
+
+//=============Column Routes================//
+//create column
+
 
 app.use('/api', apiRouter);
 

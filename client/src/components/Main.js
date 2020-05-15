@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -66,19 +67,24 @@ const useStyles = makeStyles({
 
 export default function Main() {
     const classes = useStyles();
-    const [board, updateBoard] = useState([]);
-    
+    const [boardTitle, updateBoardTitle] = useState('');
+    const [boardRedirect, setBoardRedirect] = useState(false);
+
     function onSubmit(e) {
         e.preventDefault();
-        const data = {title: board}
+        const data = {title: boardTitle}
         console.log(data);
-        
-        axios.post('/board', data)
+
+        axios.post('/api/boards/', data)
             .then(response => {
                 console.log(response);
-                
+                setBoardRedirect('/boards/:id' + response.data);
             })
-    }
+            .catch(error => {
+                console.error(error);
+            })
+            updateBoardTitle('');
+    };
     
 
     return(
@@ -109,9 +115,10 @@ export default function Main() {
                                     required
                                     id = 'standard-basic'
                                     label = 'Board name...'
-                                    value = {board}
-                                    onChange = {e => updateBoard(e.target.value)}
+                                    value = {boardTitle}
+                                    onChange = {e => updateBoardTitle(e.target.value)}
                                     />
+                                {boardRedirect && <Redirect to= {boardRedirect}/>}
                             </form> 
                         </Grid> 
                     </Card>
