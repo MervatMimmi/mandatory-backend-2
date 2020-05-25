@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Router, Route, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 import { AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, TextField } from '@material-ui/core';
@@ -53,8 +53,7 @@ export default function Header(props){
     function handleBoardList() {
         axios.get('/api/boards')
             .then(response => {
-                console.log(response.data);
-                
+                //console.log(response.data);
                 setBoards(response.data)
             })
             .catch(error => {
@@ -63,7 +62,7 @@ export default function Header(props){
     }
  
     const handleDrawer = (open) => event => {
-        console.log('event:' + event.type, event.key);
+        //console.log('event:' + event.type, event.key);
         if(event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')){
             return;
         }
@@ -99,7 +98,6 @@ export default function Header(props){
                     </ListItemSecondaryAction>
                 </ListItem>
             )}
-                
         </List>
     );
 

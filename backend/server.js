@@ -38,8 +38,9 @@ apiRouter.delete('/boards/:id/', Board.deleteBoard);
 
 //=============Column Routes================//
 // show column
-apiRouter.post('boards/:id/', Column.createColumn);
+apiRouter.post('/boards/:id', Column.showColumn);
 //create column
+apiRouter.post('/boards/:id/', Column.createColumn);
 //delete column
 
 app.use('/api/', apiRouter);

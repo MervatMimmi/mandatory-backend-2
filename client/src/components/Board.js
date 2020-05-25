@@ -1,8 +1,10 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import axios from 'axios';
 
 import { makeStyles } from '@material-ui/core/styles';
 import {TextField} from '@material-ui/core';
+
+import Column from './Column';
 
 const useStyles = makeStyles ({
 
@@ -16,19 +18,34 @@ export default function Board(props){
     const path = window.location.pathname.split('/');
     const id = path[3];
 
-    function createColumn(e){
-        e.preventDefault();
-        let data = {
-            title : title,
-            id:id}
-    
-        axios.post(`/api/boards/`+ data)
+
+   /* useEffect(() => {
+        axios.get('/api/columns/' + id)
             .then(response => {
                 console.log(response.data);
+                updateColumns(response.data);
             })
+            .catch(error => {
+                console.error(error);
+            });
+    }, [id]);*/
+
+    function createColumn(e){
+        e.preventDefault();
+    
+        axios.post(`/api/boards/${id}`, {title})
+            .then(response => {
+                console.log(response.data);
+                updateTitle(response);
+            })
+            .catch(error => {
+                console.error(error)
+            })
+            updateTitle('')
     }
 
     return(
+        <div>
         <form onSubmit = {createColumn}>
             <TextField className = {classes.listInput}
                 id = 'standard-name'
@@ -37,5 +54,9 @@ export default function Board(props){
                 value = {title}
                 onChange = {e => updateTitle(e.target.value)} />
         </form>
+        <div>
+            {columns.map(column => <Column key = {column._id} column = {column} />)}
+        </div>
+        </div>
     );
 }
