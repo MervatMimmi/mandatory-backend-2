@@ -25,6 +25,7 @@ apiRouter.use(express.json());
 apiRouter.use(express.urlencoded());
 
 const Board = require('./controllers/boards');
+const Column = require('./controllers/columns');
 
 
 //=============Board Routes================//
@@ -32,15 +33,16 @@ const Board = require('./controllers/boards');
 apiRouter.get('/boards/', Board.showBoards);
 //create board
 apiRouter.post('/boards/', Board.createBoard);
-
 //delete board
 apiRouter.delete('/boards/:id/', Board.deleteBoard);
 
 //=============Column Routes================//
+// show column
+apiRouter.post('boards/:id/', Column.createColumn);
 //create column
+//delete column
 
-
-app.use('/api', apiRouter);
+app.use('/api/', apiRouter);
 
 server.listen(PORT, function(){
     console.log('Server is running on Port: ' + PORT);

@@ -11,9 +11,9 @@ function App() {
   return (
     <HelmetProvider>
       <Router>
-        <Route path = '/' exact component = {Main} />
         <Header/>
-        <Route path ='/boards/:id' component = {Board} />
+        <Route path = '/' exact component = {Main} />
+        <Route path ='/board/:id' component = {Board} />
       </Router>
     </HelmetProvider>
   );

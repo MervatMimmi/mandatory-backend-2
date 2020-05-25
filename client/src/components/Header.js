@@ -2,19 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Router, Route, Link } from 'react-router-dom';
 import axios from 'axios';
 
-import { AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, TextField } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import DeleteIcon from '@material-ui/icons/Delete';
+
+import MyModal from './MyModal';
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
-    },
-    appBar: {
-        position: 'static',
     },
     drawerPaper: {
         position: 'relative',
@@ -37,17 +36,31 @@ export default function Header(props){
     const[drawerOpen, setDrawerOpen] = useState(false);
     const [boards, setBoards] = useState([]);
     const [title, updateTitle] = useState('');
+    const [modal, updateModal] = useState(false);
+
+    const openModal = () => updateModal(true)
+    const closeModal = () => updateModal(false)
+
 
     useEffect(() => {
+        handleBoardList();
+        }, []);
+
+    function onUpload() {
+        handleBoardList();
+    }
+
+    function handleBoardList() {
         axios.get('/api/boards')
             .then(response => {
                 console.log(response.data);
-                setBoards(response.data); 
+                
+                setBoards(response.data)
             })
             .catch(error => {
                 console.error(error);
             });
-        }, []);
+    }
  
     const handleDrawer = (open) => event => {
         console.log('event:' + event.type, event.key);
@@ -76,7 +89,7 @@ export default function Header(props){
     const drawer = (
         <List>
             {boards.map(board => 
-                <ListItem key = {board._id} button onClick = {onBoardClick(board.title)} component = {Link} {...{to:`/board/${board._id}`}} >
+                <ListItem key = {board._id} button onClick = {onBoardClick(board.title)} {...{to:`/board/:id/${board._id}`}} component = {Link}>
                     <ListItemText primary = {board.title}/>
                     <ListItemSecondaryAction>
                         <IconButton aria-label = 'Delete'
@@ -94,7 +107,7 @@ export default function Header(props){
         <div className = {classes.root}>
             <AppBar className = {classes.appBar}
                 positon = 'static'
-                //style = {{background: 'transparent', boxShadow: 'none'}} 
+                style = {{background: 'transparent', boxShadow: 'none'}} 
                 >
                 <Toolbar>
                     <IconButton className = {classes.menuButton}
@@ -114,9 +127,6 @@ export default function Header(props){
                                 role = 'presentation'
                                 onClose = {handleDrawer}>
                                 <div className = {classes.drawerTopic}>
-                                    <h4 className = {classes.h4}>
-                                        <Link to= '/'>Create a new Board</Link>
-                                    </h4>
                                     <h4 className = {classes.h4}>{drawer}</h4>
                                 </div>
                             </Drawer>
@@ -128,6 +138,11 @@ export default function Header(props){
                         tabIndex = '0'
                     >
                        {title}
+                       {!modal && <h4 className = {classes.h4}
+                                        onClick = {openModal}>
+                                        Create new Board
+                                    </h4>}
+                                    <MyModal closeModal = {closeModal} modal = {modal} onUpload = {onUpload} />
                     </Typography>
                 </Toolbar>
             </AppBar>

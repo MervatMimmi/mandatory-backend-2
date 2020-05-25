@@ -1,5 +1,6 @@
 //import models
 const Board = require('../models/board');
+const Column = require('../models/column');
 
 //function get, show a list of boards
 exports.showBoards = function(req, res) {

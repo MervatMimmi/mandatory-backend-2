@@ -1,33 +1,41 @@
-import React, {useState} from 'react';
-import { Helmet } from 'react-helmet-async';
+import React, {useState, useCallback} from 'react';
 import axios from 'axios';
 
 import { makeStyles } from '@material-ui/core/styles';
+import {TextField} from '@material-ui/core';
 
-const useStyles = makeStyles({
-    backgroundImage: {
-        width: '100vw',
-        height: '100vh',
-        backgroundColor: '#FFFAEC',
-        backgroundPosition: 'center',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
+const useStyles = makeStyles ({
+
+});
+
+export default function Board(props){
+    const classes = useStyles('');
+    const [title, updateTitle] = useState('');
+    const [columns, updateColumns] = useState([]);
+
+    const path = window.location.pathname.split('/');
+    const id = path[3];
+
+    function createColumn(e){
+        e.preventDefault();
+        let data = {
+            title : title,
+            id:id}
+    
+        axios.post(`/api/boards/`+ data)
+            .then(response => {
+                console.log(response.data);
+            })
     }
-})
-
-export default function Board() {
-    const classes = useStyles();
 
     return(
-        <div>
-            <Helmet>
-                <title>
-                    Board
-                </title>
-            </Helmet>
-            <div className = {classes.backgroundImage}>
-
-            </div>
-        </div>
+        <form onSubmit = {createColumn}>
+            <TextField className = {classes.listInput}
+                id = 'standard-name'
+                label = 'Create a list'
+                margin = 'normal'
+                value = {title}
+                onChange = {e => updateTitle(e.target.value)} />
+        </form>
     );
 }
