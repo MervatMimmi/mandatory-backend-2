@@ -33,6 +33,11 @@ boardSchema.methods.addColumn = async function(obj) {
     return columns
 }
 
+boardSchema.methods.deleteColumn = async function(columnId) {
+    const column = this.columns.find( c => c._id === columnId)
+    return column
+}
+
 boardSchema.methods.addCard = async function(columnId, card) {
     const column = this.columns.find(c => c._id == columnId)
     column.cards.push(card)
