@@ -36,17 +36,40 @@ exports.showColumns = async function(req, res) {
     }
 }
 
-//function delete, delete a column by id
-exports.deleteColumn =  async function(req, res) {
-    const {columnId} = req.params
-    try {
-        const {column} = await Board.findOneAndDelete({
-            _id : id
-        })
-        const deleteColumn = await column.deleteColumn({columnId})
-        return res.status(201).send(deleteColumn + 'column deleted')
-    }
-    catch(error){
-        return res.status(500).end();
-    }
+exports.deleteColumn = function (req, res) {
+    const {id} = req.params.boardId
+    const {columnId} = req.params.columnId
+    
+    Board.findByIdAndUpdate(
+        id, {
+            $pull: {'columns': {
+                _id: columnId
+            }}
+        }, function(err, columnId) {
+            if(err) {
+                console.log(err);
+            }
+            return res.status(201).send(columnId + 'is delated')
+        }
+    )
 }
+/*function delete, delete a column by id
+exports.deleteColumn = async function(req, res) {
+   const {id} = req.params
+   if(!id) {
+       return res.status(400).send();
+   }
+   try {
+       const column = await Board.deleteColumn.findByIdAndUpdate(
+           {
+           $pull: 
+           {
+               columns: {_id : id}
+            }
+       }, { new: true});
+       return res.status(201).send(column)
+   }
+   catch(error){
+       return res.status(500).end();
+   }
+}*/

@@ -6,7 +6,6 @@ import Header from './components/Header';
 import Main from './components/Main';
 import Board from './components/Board';
 
-
 function App() {
   return (
     <HelmetProvider>

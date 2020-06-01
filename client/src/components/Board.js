@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {DragDropContext} from 'react-beautiful-dnd';
+import { Helmet } from 'react-helmet-async';
 import axios from 'axios';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -44,9 +45,9 @@ export default function Board(props){
     function createColumn(e){
         e.preventDefault();
         
-        let data = {title: title}
+        let postData = {title: title}
 
-        axios.post(`/api/columns/${id}`, data)
+        axios.post(`/api/columns/${id}`, postData)
             .then(response => {
                 console.log(response.data);
                 updateTitle(response.data);
@@ -59,13 +60,12 @@ export default function Board(props){
     }
 
     const onDragEnd = result =>  {
-        const {source, destination, draggableId} = result
+        const {source, destination, draggableId } = result
 
-        if(!destination)
-        return
+        if(!destination) return
 
-        const fromColumner = columns.find(column => column._id === source.draggableId)
-        const toColumner = columns.find(column => column._id === destination.draggableId)
+        const fromColumner = columns.find(column => column._id === source.droppableId);
+        const toColumner = columns.find(column => column._id === destination.droppableId)
 
         const [element] = fromColumner.cards.splice(source.index, 1)
         toColumner.cards.splice(destination.index, 0, element)
@@ -73,6 +73,12 @@ export default function Board(props){
 
     return(
         <div>
+            <Helmet>
+                <title>
+                    Board
+                </title>
+            </Helmet>
+            
         <div>
             <form onSubmit = {createColumn}>
                 <TextField className = {classes.listInput}
@@ -82,13 +88,22 @@ export default function Board(props){
                     value = {title}
                     onChange = {e => updateTitle(e.target.value)} />
             </form>
-        <DragDropContext onDragEnd= {onDragEnd}>
+       
         <div className = {classes.column}>
-            {columns.map(column => <Column key = {column._id} boardId = {id} column = {column} columns = {columns} updateColumns = {updateColumns}/>  
+        <DragDropContext onDragEnd= {onDragEnd}>
+            {columns.map(column => 
+                <Column key = {column._id} 
+                    boardId = {id} 
+                    column = {column} 
+                    columns = {columns} 
+                    updateColumns = {updateColumns}
+                    cards = {column.cards}/>  
             )}   
+            </DragDropContext>
         </div>
-        </DragDropContext>
+        
         </div>
+        
         </div>
     );
 }

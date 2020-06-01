@@ -26,6 +26,7 @@ apiRouter.use(express.urlencoded());
 
 const Board = require('./controllers/boards');
 const Column = require('./controllers/columns');
+const Card = require('./controllers/cards');
 
 
 //=============Board Routes================//
@@ -43,6 +44,12 @@ apiRouter.get('/columns/:id/', Column.showColumns);
 apiRouter.post('/columns/:id/', Column.createColumn);
 //delete column
 apiRouter.delete('/columns/:id/', Column.deleteColumn);
+
+//==============Card Routes ===================//
+// show card
+apiRouter.get('/columns/:boardId/:columnId/cards',Card.showCards);
+//create card
+apiRouter.post('/columns/:boardId/:columnId/cards', Card.createCard);
 
 app.use('/api/', apiRouter);
 

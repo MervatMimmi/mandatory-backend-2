@@ -46,7 +46,7 @@ boardSchema.methods.addCard = async function(columnId, card) {
 }
 
 boardSchema.methods.getCards = async function(columnId) {
-    const column = this.find(c => c._id == columnId)
+    const column = this.columns.find(c => c._id == columnId)
     return column.cards
 }
 

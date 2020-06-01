@@ -2,18 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-import { AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, Button, Drawer, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import MyModal from './MyModal';
+const network = require('../Network.jpg');
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
+        width: '100vw',
+        height: '100vh',
+        backgroundImage: `url(${network})`,
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        opacity: '0.9'
     },
     drawerPaper: {
         position: 'relative',
@@ -22,9 +30,25 @@ const useStyles = makeStyles(theme => ({
     menuButton: {
         marginLeft: -12,
         marginRight: 20,
+        color: '#FFFEF2',
+    },
+    flex: {
+        color: '#FFFEF2',
+        flexGrow: 1 , 
+       
+    },
+    column: {
+        margin:'20px',
+        
+    },
+    button: {
+        color: '#FFFEF2',
+    },
+    title: {
+        marginRight : '35vw',
     },
     h4: {
-        margin:'20px'
+        color: '#FFFEF2',
     },
     toolbarMargin: theme.mixins.toolbar,
 }));
@@ -41,10 +65,9 @@ export default function Header(props){
     const openModal = () => updateModal(true)
     const closeModal = () => updateModal(false)
 
-
     useEffect(() => {
         handleBoardList();
-        }, []);
+    }, []);
 
     function onUpload() {
         handleBoardList();
@@ -77,7 +100,7 @@ export default function Header(props){
     const handleDelete = (boardId) => {
         axios.delete('/api/boards/' + boardId)
             .then(response => {
-                console.log(response.data);
+                //console.log(response.data);
                 setBoards(boards.filter( el => el._id !== boardId))
             })
             .catch(error => {
@@ -104,10 +127,10 @@ export default function Header(props){
     return(
         <div className = {classes.root}>
             <AppBar className = {classes.appBar}
-                positon = 'static'
-                style = {{background: 'transparent', boxShadow: 'none'}} 
+                color = 'transparent'
+                elevation = {0} 
                 >
-                <Toolbar>
+                <Toolbar className = {classes.toolbar}>
                     <IconButton className = {classes.menuButton}
                         color = 'secondary'
                         aria-label = 'Open Menu'
@@ -125,23 +148,24 @@ export default function Header(props){
                                 role = 'presentation'
                                 onClose = {handleDrawer}>
                                 <div className = {classes.drawerTopic}>
-                                    <h4 className = {classes.h4}>{drawer}</h4>
+                                    <h4 className = {classes.column}>{drawer}</h4>
                                 </div>
                             </Drawer>
                         </nav>
                     </IconButton>
                     <Typography className = {classes.flex}
-                        variant = 'subtitle1'
-                        color = 'secondary'
+                        variant = 'h6'
                         tabIndex = '0'
-                    >
-                       {title}
-                       {!modal && <h4 className = {classes.h4}
-                                        onClick = {openModal}>
-                                        Create new Board
-                                    </h4>}
-                                    <MyModal closeModal = {closeModal} modal = {modal} onUpload = {onUpload} />
+                    > Trello-like App
                     </Typography>
+                    <Button className = {classes.button}>
+                        <h2 className = {classes.title}>{title}</h2>
+                        {!modal && <h4 className = {classes.h4}
+                                            onClick = {openModal}>
+                                            Create a new board
+                                    </h4>}
+                        <MyModal closeModal = {closeModal} modal = {modal} onUpload = {onUpload} />
+                    </Button>
                 </Toolbar>
             </AppBar>
             <div className = {classes.toolbarMargin}/>
