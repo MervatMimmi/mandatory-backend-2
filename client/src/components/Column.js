@@ -1,12 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
+import Moment from 'react-moment';
 
 import {Grid, Paper, Card, CardContent, Typography, IconButton, Button} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import CardModal from './CardModal';
+import EditModal from './EditModal';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -30,9 +32,18 @@ export default function Column({boardId, column, handleDeleteColumn, columns, up
     const [title, setTitle] = useState('');
     const [cards, setCards] = useState([]);
     const [modal, updateModal] = useState(false);
+    const [editModal, setEditModal] = useState(false);
+    const [choosenCard, updateChoosenCard] = useState('');
 
-    const openModal = () => updateModal(true)
+    const openModal = () => updateModal(true);
     const closeModal = () => updateModal(false)
+
+   /* const openEditModal = (cardId) => {
+        updateChoosenCard(cardId);
+        setEditModal(true)
+    }*/
+    const openEditModal = () => setEditModal(true);
+    const closeEditModal = () => setEditModal(false)
 
     const columnId = column._id
 
@@ -108,38 +119,52 @@ export default function Column({boardId, column, handleDeleteColumn, columns, up
                         {(provided, snapshot) => (
                             <Card className = {classes.card}>
                             <CardContent>
-                            <div index = {index}
-                                ref = {provided.innerRef}
-                                {...provided.draggableProps}  
-                                {...provided.dragHandleProps}
-                                style = {{
-                                    userSelect :'none',
-                                    padding: 16,
-                                    margin: '0 0 8px 0',
-                                    minHeight: '50px',
-                                    borderRadius: '13px',
-                                    backgroundColor: snapshot.isDragging ? "lightgrey"
-                                    : "#5C5C9A",
-                                    color: "black",
-                                  ...provided.draggableProps.style
-                                }}>
-                                <Typography variant = 'button' component = 'h2'> 
-                                    {card.title}   
-                                </Typography>
-                                <Typography component = 'p'>
-                                    {card.description}  
-                                </Typography>
-                                <div className = {classes.icons}>
-                                    <IconButton 
-                                        onClick = {e => handleDeleteCard(card._id)}
-                                    >
-                                        <DeleteIcon/>
-                                    </IconButton>
-                                    <IconButton>
-                                        <EditIcon />
-                                    </IconButton>
+                                <div index = {index}
+                                    ref = {provided.innerRef}
+                                    {...provided.draggableProps}  
+                                    {...provided.dragHandleProps}
+                                    style = {{
+                                        userSelect :'none',
+                                        padding: 16,
+                                        margin: '0 0 8px 0',
+                                        minHeight: '50px',
+                                        borderRadius: '13px',
+                                        backgroundColor: snapshot.isDragging ? "lightgrey"
+                                        : "#5C5C9A",
+                                        color: "black",
+                                    ...provided.draggableProps.style
+                                    }}>
+                                    <Typography variant = 'button' component = 'h2'> 
+                                        {card.title}   
+                                    </Typography>
+                                    <Typography component = 'p'>
+                                        {card.description}  
+                                    </Typography>
+                                    <div className = {classes.icons}>
+                                        <IconButton arial-label = 'Delete'
+                                            onClick = {() => {handleDeleteCard(card._id)}}>
+                                            <DeleteIcon/>
+                                        </IconButton>
+                                        <IconButton>
+                                            {!editModal && <span arial-label = 'Edit'
+                                                    onClick = {openEditModal}>
+                                                        <EditIcon/>
+                                                    </span>}
+                                            <EditModal closeEditModal = {closeEditModal} 
+                                            editModal = {editModal} 
+                                            onUploadCard = {onUploadCard} 
+                                            cardId = {card._id} 
+                                            columnId = {columnId}
+                                            card = {card} 
+                                            boardId = {boardId}
+                                            cardTitle = {card.title}
+                                            description = {card.description}
+                                            />
+                                            
+                                        </IconButton> 
+                                    </div>
+                                    <Moment date = {card.date}/>
                                 </div>
-                            </div>
                             </CardContent>
                         </Card>
                         )}

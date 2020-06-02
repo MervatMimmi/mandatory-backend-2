@@ -46,7 +46,7 @@ exports.deleteColumn = async function(req, res) {
             { $pull: {'columns': {_id: id}}},
             { new: true},
             );
-            res.status(201).send(updateBoard);
+            res.status(204).send(updateBoard);
             console.log(updateBoard);    
     }
     catch(e) {

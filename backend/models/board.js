@@ -20,8 +20,9 @@ let boardSchema = new Schema({
             description: {
                 type: String,
             },
-            created_at: {
+            date: {
                 type: Date,
+                default: Date.now
             }
         }]
     }]
@@ -33,10 +34,10 @@ boardSchema.methods.addColumn = async function(obj) {
     return columns
 }
 
-boardSchema.methods.deleteColumn = async function(columnId) {
+/*boardSchema.methods.deleteColumn = async function(columnId) {
     const column = this.columns.find( c => c._id === columnId)
     return column
-}
+}*/
 
 boardSchema.methods.addCard = async function(columnId, card) {
     const column = this.columns.find(c => c._id == columnId)

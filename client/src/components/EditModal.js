@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import axios from 'axios';
-import moment from 'moment';
 
 import {Button, TextField, TextareaAutosize, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -27,12 +26,12 @@ const useStyles = makeStyles({
     },
 });
 
-export default function CardModal({modal,closeModal, boardId, column, onUploadCard}) {
+export default function EditModal(props) {
+    
     const classes = useStyles();
-
+    
     const [cardTitle, setCardTitle] = useState('');
     const [description, setDescription] = useState('');
-    
 
     function handleCardTitle(e) {
         setCardTitle(e.target.value)
@@ -42,20 +41,17 @@ export default function CardModal({modal,closeModal, boardId, column, onUploadCa
         setDescription(e.target.value)
     }
 
-    function createCard(e) {
-        console.log('create card');
-        
+    function updateCard(e) {
         e.preventDefault();
         let data = {
             title: cardTitle,
             description: description,
-            time: moment().format('MMMM Do YYYY, h:mm:ss a'),
         }
 
-        axios.post(`/api/columns/${boardId}/${column._id}/cards`, data)
+        axios.put(`/api/columns/${props.boardId}/${props.columnId}/cards/${props.cardId}`, data)
             .then(response => {
                 console.log(response.data);
-                onUploadCard(column._id, response.data)
+                props.onUploadCard(props.columnId, response.data)
                 setCardTitle('');
                 setDescription('');
             })
@@ -64,25 +60,24 @@ export default function CardModal({modal,closeModal, boardId, column, onUploadCa
             });
             setCardTitle('');
             setDescription('');
-            closeModal();
+            props.closeEditModal();
     }
 
     return(
         <div>
-            <Dialog open = {modal}
-                onClose = {closeModal}
+            <Dialog open = {props.editModal}
+                onClose = {props.closeEditModal}
                 aria-labelledby="form-dialog-title">
-                <DialogTitle id = 'form-dialog-title'>Board name:</DialogTitle>
+                <DialogTitle id = 'form-dialog-title'>Update card {props.cardTitle} </DialogTitle>
                 <DialogContent className = {classes.content}>
                     <DialogContentText>
-                        To create a board, please enter a title
                     </DialogContentText>
                     <TextField
                         autoFocus
                         value = {cardTitle}
                         margin = 'dense'
                         id = 'card'
-                        label = 'Card Title'
+                        label = {props.cardTitle}
                         type = 'name'
                         fullWidth 
                         onChange = {e => {handleCardTitle(e)}}/>
@@ -90,13 +85,13 @@ export default function CardModal({modal,closeModal, boardId, column, onUploadCa
                         rowsMin={4}
                         fullWidth
                         aria-label="maximum height"
-                        placeholder="Maximum 4 rows"
+                        placeholder={props.description}
                         value = {description}
                         onChange = {e => {handleCardDescription(e)}}
                         /> 
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick = {createCard}>
+                    <Button onClick = {updateCard}>
                         Submit
                     </Button>
                 </DialogActions>

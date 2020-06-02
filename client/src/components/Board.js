@@ -12,7 +12,8 @@ const useStyles = makeStyles((theme) => ({
     windowBoard: {
         display: 'flex',
         direction: 'column',
-        margin: '10px',        
+        margin: '10px', 
+        marginTop: '50px',       
     },
     form: {
         height: '100px',
@@ -81,16 +82,30 @@ export default function Board(props){
             })
     }
 
-    const onDragEnd = result =>  {
+    const onDragEnd = (result, columns, updateColumns, cards) =>  {
         const {source, destination } = result
 
-        if(!destination) return
+        if(!result.destination) return;
 
-        const fromColumner = columns.find(column => column._id === source.droppableId);
-        const toColumner = columns.find(column => column._id === destination.droppableId)
-
-        const [element] = fromColumner.cards.splice(source.index, 1)
-        toColumner.cards.splice(destination.index, 0, element)
+        if(source.droppableId !== destination.droppableId) {
+            const sourceColumn = columns[source.droppableId];
+            const destColumn = columns[destination.droppableId];
+            const sourceCards = [...sourceColumn.cards];
+            const destCards = [...destColumn.cards];
+            const[element] = sourceCards.splice(source.index, 1)
+            destCards.splice(destination.index, 0, element);
+            updateColumns({
+                ...columns,
+                [source.droppableId]: {
+                    ...sourceColumn,
+                    cards: sourceCards
+                },
+                [destination.droppableId]: {
+                    ...destColumn,
+                    cards: destCards
+                }
+            });
+        }
     }
 
     return(
@@ -112,7 +127,7 @@ export default function Board(props){
             </form>
        
         <div className = {classes.column}>
-        <DragDropContext onDragEnd= {onDragEnd(columns, updateColumns)}>
+        <DragDropContext onDragEnd= {result => onDragEnd(result, columns, updateColumns)}>
             {columns.map(column => 
                 <Column key = {column._id} 
                     boardId = {id} 

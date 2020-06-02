@@ -24,6 +24,35 @@ connection.once('open', () => {
 apiRouter.use(express.json());
 apiRouter.use(express.urlencoded());
 
+/*apiRouter.use((req, res, next) => {
+    if(req.is('json')) {
+        let data = '';
+        req.on('data', chunk => {
+            data += chunk.toString();
+        });
+        req.on('end', () => {
+            try {
+                data = JSON.parse(data);
+                req.body = data;
+                next();
+            }
+            catch(error) {
+                res.status(400).end();
+            }
+        })
+    } else {
+        next();
+    }
+})
+
+apiRouter.use((req, res, next) => {
+    let start = Date.now();
+    res.once('finish',() => {
+        console.log(req.method, req.path, res.statusCode, (Date.now()- start) + 'sm');   
+    });
+    next();
+});*/
+
 const Board = require('./controllers/boards');
 const Column = require('./controllers/columns');
 const Card = require('./controllers/cards');
@@ -53,6 +82,9 @@ apiRouter.post('/columns/:boardId/:columnId/cards', Card.createCard);
 //delete card
 apiRouter.delete('/columns/:boardId/:columnId/cards/:id', Card.deleteCard);
 //update card
+apiRouter.put('/columns/:boardId/:columnId/cards/:id', Card.updateCard);
+
+
 
 
 app.use('/api/', apiRouter);

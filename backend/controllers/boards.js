@@ -34,7 +34,7 @@ exports.deleteBoard = function(req, res) {
     let boardId = req.params.id;
     Board.findByIdAndDelete(boardId)
         .then(() => {
-            res.status(201).send('board deleted');
+            res.status(204).send('board deleted');
         })
         .catch(error => {
             console.error(error);
