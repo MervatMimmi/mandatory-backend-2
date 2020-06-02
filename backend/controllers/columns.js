@@ -36,40 +36,23 @@ exports.showColumns = async function(req, res) {
     }
 }
 
-exports.deleteColumn = function (req, res) {
-    const {id} = req.params.boardId
-    const {columnId} = req.params.columnId
-    
-    Board.findByIdAndUpdate(
-        id, {
-            $pull: {'columns': {
-                _id: columnId
-            }}
-        }, function(err, columnId) {
-            if(err) {
-                console.log(err);
-            }
-            return res.status(201).send(columnId + 'is delated')
-        }
-    )
-}
-/*function delete, delete a column by id
+// delete list in a board
 exports.deleteColumn = async function(req, res) {
-   const {id} = req.params
-   if(!id) {
-       return res.status(400).send();
-   }
-   try {
-       const column = await Board.deleteColumn.findByIdAndUpdate(
-           {
-           $pull: 
-           {
-               columns: {_id : id}
-            }
-       }, { new: true});
-       return res.status(201).send(column)
-   }
-   catch(error){
-       return res.status(500).end();
-   }
-}*/
+    const {id} = req.params;
+    const { column } = req.params;
+    console.log('column :'  +column)
+    try {
+        const updateBoard = await Board.findOneAndUpdate(column, 
+            { $pull: {'columns': {_id: id}}},
+            { new: true},
+            );
+            res.status(201).send(updateBoard);
+            console.log(updateBoard);    
+    }
+    catch(e) {
+        res.status(500).send('Something is wrong');
+    }
+}
+
+
+

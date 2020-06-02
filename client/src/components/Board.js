@@ -9,12 +9,24 @@ import {TextField} from '@material-ui/core';
 import Column from './Column';
 
 const useStyles = makeStyles((theme) => ({
+    windowBoard: {
+        display: 'flex',
+        direction: 'column',
+        margin: '10px',        
+    },
+    form: {
+        height: '100px',
+        padding: '0 24px',
+        margin: '10px',
+        borderRadius: '13px',
+        background: 'lightgrey',
+    },
     column: {
         display: 'flex',
         direction: 'row',
         justify: 'space-around',
         flexGrow: 1,
-        overflow: 'hidden',
+        //overflow: 'hidden',
         padding: theme.spacing(0,3)
     }
 }));
@@ -52,15 +64,25 @@ export default function Board(props){
                 console.log(response.data);
                 updateTitle(response.data);
                 updateTitle('');
+                getColumns(); 
             })
             .catch(error => {
                 console.error(error)
             });
-        getColumns();  
+         
+    }
+
+    function handleDeleteColumn(columnId){
+        console.log(columnId);
+        axios.delete('/api/columns/' + columnId)
+            .then(response => {
+                console.log(response.data);
+                updateColumns(columns.filter(el => el._id !== columnId));
+            })
     }
 
     const onDragEnd = result =>  {
-        const {source, destination, draggableId } = result
+        const {source, destination } = result
 
         if(!destination) return
 
@@ -79,8 +101,8 @@ export default function Board(props){
                 </title>
             </Helmet>
             
-        <div>
-            <form onSubmit = {createColumn}>
+        <div className = {classes.windowBoard}>
+            <form onSubmit = {createColumn} className = {classes.form}>
                 <TextField className = {classes.listInput}
                     id = 'standard-name'
                     label = 'Create a list'
@@ -90,20 +112,18 @@ export default function Board(props){
             </form>
        
         <div className = {classes.column}>
-        <DragDropContext onDragEnd= {onDragEnd}>
+        <DragDropContext onDragEnd= {onDragEnd(columns, updateColumns)}>
             {columns.map(column => 
                 <Column key = {column._id} 
                     boardId = {id} 
                     column = {column} 
                     columns = {columns} 
-                    updateColumns = {updateColumns}
+                    handleDeleteColumn = {handleDeleteColumn}
                     cards = {column.cards}/>  
             )}   
             </DragDropContext>
         </div>
-        
         </div>
-        
         </div>
     );
 }

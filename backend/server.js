@@ -50,6 +50,10 @@ apiRouter.delete('/columns/:id/', Column.deleteColumn);
 apiRouter.get('/columns/:boardId/:columnId/cards',Card.showCards);
 //create card
 apiRouter.post('/columns/:boardId/:columnId/cards', Card.createCard);
+//delete card
+apiRouter.delete('/columns/:boardId/:columnId/cards/:id', Card.deleteCard);
+//update card
+
 
 app.use('/api/', apiRouter);
 

@@ -8,21 +8,10 @@ import MenuIcon from '@material-ui/icons/Menu';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import MyModal from './MyModal';
-const network = require('../Network.jpg');
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
-    root: {
-        display: 'flex',
-        width: '100vw',
-        height: '100vh',
-        backgroundImage: `url(${network})`,
-        backgroundPosition: 'center',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        opacity: '0.9'
-    },
     drawerPaper: {
         position: 'relative',
         width: drawerWidth
@@ -125,7 +114,7 @@ export default function Header(props){
     );
 
     return(
-        <div className = {classes.root}>
+        <div >
             <AppBar className = {classes.appBar}
                 color = 'transparent'
                 elevation = {0} 
@@ -164,7 +153,9 @@ export default function Header(props){
                                             onClick = {openModal}>
                                             Create a new board
                                     </h4>}
-                        <MyModal closeModal = {closeModal} modal = {modal} onUpload = {onUpload} />
+                        <MyModal closeModal = {closeModal} 
+                            modal = {modal} 
+                            onUpload = {onUpload} />
                     </Button>
                 </Toolbar>
             </AppBar>
